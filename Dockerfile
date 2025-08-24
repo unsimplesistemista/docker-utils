@@ -1,4 +1,4 @@
 ARG ARCH
 ARG mysql_version
-FROM mysql:${mysql_version:-8.0}
+FROM ubuntu:${ubuntu_version:-22.04}
 
