@@ -1,5 +1,5 @@
 ARG ARCH
-ARG mysql_version
+ARG ubuntu_version
 FROM ubuntu:${ubuntu_version:-24.04}
 
 ENV DEBIAN_FRONTEND=noninteractive
