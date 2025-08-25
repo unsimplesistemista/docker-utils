@@ -18,3 +18,6 @@ RUN curl -O https://repo.percona.com/apt/percona-release_latest.generic_all.deb 
     apt update && \
     percona-release setup pxb-80 && \
     apt -y install percona-xtrabackup-80
+
+ADD ./rootfs /
+RUN chmod +x /usr/local/bin/*.sh
