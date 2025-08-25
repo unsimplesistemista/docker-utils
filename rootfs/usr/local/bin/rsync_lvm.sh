@@ -1,4 +1,6 @@
-#/bin/bash -e
+#/bin/bash
+
+set -e 
 
 DRY_RUN=${DRY_RUN:-false}
 

@@ -1,4 +1,6 @@
-#/bin/bash -e
+#/bin/bash
+
+set -e
 
 SSH_HOST=${SSH_HOST}
 SSH_USER=${SSH_USER:-root}
