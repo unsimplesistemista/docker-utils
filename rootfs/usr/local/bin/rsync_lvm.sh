@@ -61,7 +61,7 @@ fi
 
 # Create snapshot
 echo "Creating snapshot ${SNAP_LVM_DEVICE} ..."
-ssh ${SSH_USER_SOURCE}@${SSH_HOST_SOURCE} ${SSH_OPTS} -p ${SSH_PORT_SOURCE} "lvcreate ${LVM_SNAPSHOT_SIZE} -s -n ${BACKUP_ID}-snap ${LVM_DEVICE}"
+ssh ${SSH_USER_SOURCE}@${SSH_HOST_SOURCE} ${SSH_OPTS} -p ${SSH_PORT_SOURCE} "lvcreate ${LVM_SNAPSHOT_SIZE} -s -n ${LVM_LV}-${BACKUP_ID}-snap ${LVM_DEVICE}"
 # Mount snapshot
 echo "Mounting snapshot ${SNAP_LVM_DEVICE} on ${SNAP_MOUNTPOINT} ..."
 ssh ${SSH_USER_SOURCE}@${SSH_HOST_SOURCE} ${SSH_OPTS} -p ${SSH_PORT_SOURCE} "if [ ! -e ${SNAP_MOUNTPOINT} ]; then mkdir -p ${SNAP_MOUNTPOINT}; fi; mount -o ro ${SNAP_LVM_DEVICE} ${SNAP_MOUNTPOINT}"
