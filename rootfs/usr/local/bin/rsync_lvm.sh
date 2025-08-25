@@ -4,17 +4,15 @@ set -e
 
 DRY_RUN=${DRY_RUN:-false}
 
+SSH_OPTS="-i /root/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 SSH_HOST_SOURCE=${SSH_HOST_SOURCE}
 SSH_USER_SOURCE=${SSH_USER_SOURCE:-root}
 SSH_PORT_SOURCE=${SSH_PORT_SOURCE:-22}
-SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 export DOCKER_HOST_SOURCE=${DOCKER_HOST_SOURCE:-tcp://${SSH_HOST_SOURCE}:2375}
 
 SSH_HOST_DEST=${SSH_HOST_DEST}
 SSH_USER_DEST=${SSH_USER_DEST:-root}
 SSH_PORT_DEST=${SSH_PORT_DEST:-22}
-SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-export DOCKER_HOST_DEST=${DOCKER_HOST_DEST:-tcp://${SSH_HOST_DEST}:2375}
 
 BACKUP_ID=${BACKUP_ID:-lvm-sync}
 LVM_VG=${LVM_VG}
