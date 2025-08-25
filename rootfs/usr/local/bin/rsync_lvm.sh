@@ -66,8 +66,6 @@ ssh ${SSH_USER_SOURCE}@${SSH_HOST_SOURCE} ${SSH_OPTS} -p ${SSH_PORT_SOURCE} "lvc
 echo "Mounting snapshot ${SNAP_LVM_DEVICE} on ${SNAP_MOUNTPOINT} ..."
 ssh ${SSH_USER_SOURCE}@${SSH_HOST_SOURCE} ${SSH_OPTS} -p ${SSH_PORT_SOURCE} "if [ ! -e ${SNAP_MOUNTPOINT} ]; then mkdir -p ${SNAP_MOUNTPOINT}; fi; mount -o ro ${SNAP_LVM_DEVICE} ${SNAP_MOUNTPOINT}"
 
-exit 0 
-
 # Rsync backup to destination server
 ssh ${SSH_USER_DEST}@${SSH_HOST_DEST} ${SSH_OPTS} -p ${SSH_PORT_DEST} "if [ ! -e ${BACKUP_PATH_DEST} ]; then mkdir -p ${BACKUP_PATH_DEST}; fi"
 rsync -${RSYNC_EXTRA_FLAGS}avz --delete-before -e "ssh ${SSH_OPTS} -p ${SSH_PORT_DEST}" ${BACKUP_PATH_SOURCE}/ ${SSH_USER_DEST}@${SSH_HOST_DEST}:${BACKUP_PATH_DEST}/
