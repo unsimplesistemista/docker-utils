@@ -50,7 +50,7 @@ if [ "a${BACKUP_SECRET}" != "a" ]; then
   XTRABACKUP_EXTRA_FLAGS="--encrypt=AES256 --encrypt-key=${BACKUP_SECRET} ${XTRABACKUP_EXTRA_FLAGS}"
 fi
 
-xtrabackup --ssl --backup --target-dir ${BACKUP_TMP_PATH} \
+xtrabackup --backup --target-dir ${BACKUP_TMP_PATH} \
   --compress --rsync \
   --user=${MYSQL_USER} --password=${MYSQL_PASSWORD} \
   --host=${MYSQL_HOST} --port=${MYSQL_PORT} \
