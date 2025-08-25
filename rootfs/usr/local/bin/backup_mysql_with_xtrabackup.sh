@@ -24,7 +24,8 @@ S3_ENDPOINT_URL=${S3_ENDPOINT_URL:-https://s3.${S3_REGION}.amazonaws.com}
 
 TODAY=$(date +%Y%m%d-%H%M%S)
 
-BACKUP_TMP_PATH=/${BACKUP_TMP_FOLDER}/${BACKUP_ID}-${TODAY}
+BACKUP_TMP_PATH=${BACKUP_TMP_FOLDER}/${BACKUP_ID}-${TODAY}
+BACKUP_TMP_FILE=${BACKUP_TMP_FOLDER}/${BACKUP_ID}-${TODAY}.tar.gz
 BACKUP_S3_PATH=${S3_PREFIX}/${BACKUP_ID}/${SSH_HOST}/
 
 if [ "a${BACKUP_HOST}" == "a" ]; then
@@ -46,34 +47,26 @@ if [ "a${MYSQL_DATABASE_EXCLUDE}" != "a" ]; then
   XTRABACKUP_BACKUP_EXTRA_FLAGS="--databases-exclude=\"${MYSQL_DATABASE_EXCLUDE}\" ${XTRABACKUP_BACKUP_EXTRA_FLAGS}"
 fi
 
-if [ "a${BACKUP_SECRET}" != "a" ]; then
-  XTRABACKUP_ENCRYPT_FLAGS="--encrypt=AES256 --encrypt-key=${BACKUP_SECRET} ${XTRABACKUP_ENCRYPT_FLAGS}"
-fi
-
 xtrabackup --backup --target-dir ${BACKUP_TMP_PATH} --rsync \
   --user=${MYSQL_USER} --password=${MYSQL_PASSWORD} \
   --host=${MYSQL_HOST} --port=${MYSQL_PORT} \
   ${XTRABACKUP_BACKUP_EXTRA_FLAGS}
 
-xtrabackup --prepare --target-dir ${BACKUP_TMP_PATH} \
-  --compress \
-  ${XTRABACKUP_ENCRYPT_FLAGS} \
-
-exit 0
+xtrabackup --prepare --target-dir ${BACKUP_TMP_PATH}
 
 # Create a tar.gz of the backup
 if [ "a${BACKUP_SECRET}" == "a" ]; then
   echo "Compressing backup file ${BACKUP_TMP_FILE} ..."
-  ssh ${SSH_USER}@${SSH_HOST} ${SSH_OPTS} -p ${SSH_PORT} "tar -zvcf ${BACKUP_TMP_FILE} -C ${SNAP_MOUNTPOINT} . "
-  if ! ssh ${SSH_USER}@${SSH_HOST} ${SSH_OPTS} -p ${SSH_PORT} "if [ -e ${BACKUP_TMP_FILE} ]; then exit 0; else exit 1; fi"; then
-    echo "ERROR: could not create backup file ${SSH_HOST}:${BACKUP_TMP_FILE}, exiting ..."
+  tar -zvcf ${BACKUP_TMP_FILE} -C ${SNAP_MOUNTPOINT} .
+  if [ ! -e ${BACKUP_TMP_FILE} ]; then
+    echo "ERROR: could not create backup file ${BACKUP_TMP_FILE}, exiting ..."
     exit 1
   fi
 else
   # Decrypt using openssl enc -d -aes-256-cbc -md md5 -k password -in archive.tar.gz.encrypt | tar -x
   echo "Compressing and encrypting backup file ${BACKUP_TMP_FILE}.encrypt ..."
-  ssh ${SSH_USER}@${SSH_HOST} ${SSH_OPTS} -p ${SSH_PORT} "tar -zvcf - -C ${SNAP_MOUNTPOINT} . | openssl enc -e -aes256 -pbkdf2 -pass pass:${BACKUP_SECRET} -out ${BACKUP_TMP_FILE}.encrypt"
-  if ! ssh ${SSH_USER}@${SSH_HOST} ${SSH_OPTS} -p ${SSH_PORT} "if [ -e ${BACKUP_TMP_FILE}.encrypt ]; then exit 0; else exit 1; fi"; then
+  tar -zvcf - -C ${SNAP_MOUNTPOINT} . | openssl enc -e -aes256 -pbkdf2 -pass pass:${BACKUP_SECRET} -out ${BACKUP_TMP_FILE}.encrypt
+  if [ ! -e ${BACKUP_TMP_FILE}.encrypt ]; then
     echo "ERROR: could not create backup file ${SSH_HOST}:${BACKUP_TMP_FILE}.encrypt, exiting ..."
     exit 1
   fi
@@ -95,6 +88,4 @@ fi
 
 # Delete backup file
 echo "Deleting backup file ${BACKUP_TMP_FILE} ..."
-ssh ${SSH_USER}@${SSH_HOST} ${SSH_OPTS} -p ${SSH_PORT} "rm ${BACKUP_TMP_FILE}*"
-
-cleanup_lvm
+ssh ${SSH_USER}@${SSH_HOST} ${SSH_OPTS} -p ${SSH_PORT} "rm -rf ${BACKUP_TMP_FILE}*"
