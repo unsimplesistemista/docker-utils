@@ -68,6 +68,6 @@ ssh ${SSH_USER_SOURCE}@${SSH_HOST_SOURCE} ${SSH_OPTS} -p ${SSH_PORT_SOURCE} "if 
 
 # Rsync backup to destination server
 ssh ${SSH_USER_DEST}@${SSH_HOST_DEST} ${SSH_OPTS} -p ${SSH_PORT_DEST} "if [ ! -e ${BACKUP_PATH_DEST} ]; then mkdir -p ${BACKUP_PATH_DEST}; fi"
-ssh ${SSH_USER_DEST}@${SSH_HOST_DEST} ${SSH_OPTS} -p ${SSH_PORT_DEST} "rsync -${RSYNC_EXTRA_FLAGS}avz --delete-before -e "ssh ${SSH_OPTS} -p ${SSH_PORT_SOURCE}" ${SSH_USER_SOURCE}@${SSH_HOST_SOURCE}:${BACKUP_PATH_SOURCE}/ ${BACKUP_PATH_DEST}/"
+ssh ${SSH_USER_DEST}@${SSH_HOST_DEST} ${SSH_OPTS} -p ${SSH_PORT_DEST} "rsync -${RSYNC_EXTRA_FLAGS}avz --delete-before -e \"ssh ${SSH_OPTS} -p ${SSH_PORT_SOURCE}\" ${SSH_USER_SOURCE}@${SSH_HOST_SOURCE}:${BACKUP_PATH_SOURCE}/ ${BACKUP_PATH_DEST}/"
 
 cleanup_lvm
