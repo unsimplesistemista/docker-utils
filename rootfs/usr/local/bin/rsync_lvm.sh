@@ -4,7 +4,7 @@ set -e
 
 DRY_RUN=${DRY_RUN:-false}
 
-SSH_OPTS="-i /root/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 SSH_HOST_SOURCE=${SSH_HOST_SOURCE}
 SSH_USER_SOURCE=${SSH_USER_SOURCE:-root}
 SSH_PORT_SOURCE=${SSH_PORT_SOURCE:-22}
