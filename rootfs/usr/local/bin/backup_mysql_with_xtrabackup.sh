@@ -57,7 +57,7 @@ xtrabackup --prepare --target-dir ${BACKUP_TMP_PATH}
 # Create a tar.gz of the backup
 if [ "a${BACKUP_SECRET}" == "a" ]; then
   echo "Compressing backup file ${BACKUP_TMP_FILE} ..."
-  tar -zvcf ${BACKUP_TMP_FILE} -C ${SNAP_MOUNTPOINT} .
+  tar -zvcf ${BACKUP_TMP_FILE} -C ${BACKUP_TMP_PATH} .
   if [ ! -e ${BACKUP_TMP_FILE} ]; then
     echo "ERROR: could not create backup file ${BACKUP_TMP_FILE}, exiting ..."
     exit 1
@@ -65,9 +65,9 @@ if [ "a${BACKUP_SECRET}" == "a" ]; then
 else
   # Decrypt using openssl enc -d -aes-256-cbc -md md5 -k password -in archive.tar.gz.encrypt | tar -x
   echo "Compressing and encrypting backup file ${BACKUP_TMP_FILE}.encrypt ..."
-  tar -zvcf - -C ${SNAP_MOUNTPOINT} . | openssl enc -e -aes256 -pbkdf2 -pass pass:${BACKUP_SECRET} -out ${BACKUP_TMP_FILE}.encrypt
+  tar -zvcf - -C ${BACKUP_TMP_PATH} . | openssl enc -e -aes256 -pbkdf2 -pass pass:${BACKUP_SECRET} -out ${BACKUP_TMP_FILE}.encrypt
   if [ ! -e ${BACKUP_TMP_FILE}.encrypt ]; then
-    echo "ERROR: could not create backup file ${SSH_HOST}:${BACKUP_TMP_FILE}.encrypt, exiting ..."
+    echo "ERROR: could not create backup file ${BACKUP_TMP_FILE}.encrypt, exiting ..."
     exit 1
   fi
 fi
@@ -88,4 +88,4 @@ fi
 
 # Delete backup file
 echo "Deleting backup file ${BACKUP_TMP_FILE} ..."
-ssh ${SSH_USER}@${SSH_HOST} ${SSH_OPTS} -p ${SSH_PORT} "rm -rf ${BACKUP_TMP_FILE}*"
+rm -rf ${BACKUP_TMP_FILE}*
