@@ -57,6 +57,9 @@ xtrabackup --backup --target-dir ${BACKUP_TMP_PATH} \
   ${XTRABACKUP_EXTRA_FLAGS} \
   ${XTRABACKUP_BACKUP_EXTRA_FLAGS}
 
+xtrabackup --prepare --target-dir ${BACKUP_TMP_PATH} 
+  ${XTRABACKUP_EXTRA_FLAGS} \
+
 exit 0
 
 # Create a tar.gz of the backup
