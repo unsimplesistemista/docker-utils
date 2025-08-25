@@ -9,7 +9,8 @@ RUN apt update && apt -y install \
     curl \
     gnupg2 \
     lsb-release \
-    lz4
+    lz4 \
+    openssh-client
 
 # Install percona xtrabackup 8.0
 RUN curl -O https://repo.percona.com/apt/percona-release_latest.generic_all.deb && \
