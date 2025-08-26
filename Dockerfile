@@ -11,7 +11,8 @@ RUN apt update && apt -y install \
     lsb-release \
     lz4 \
     bzip2 \
-    openssh-client
+    openssh-client \
+    docker-cli
 
 # Install percona xtrabackup 8.0
 RUN curl -O https://repo.percona.com/apt/percona-release_latest.generic_all.deb && \
