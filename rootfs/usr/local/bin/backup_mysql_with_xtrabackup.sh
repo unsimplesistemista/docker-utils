@@ -25,7 +25,7 @@ S3_ENDPOINT_URL=${S3_ENDPOINT_URL:-https://s3.${S3_REGION}.amazonaws.com}
 TODAY=$(date +%Y%m%d-%H%M%S)
 
 BACKUP_TMP_PATH=${BACKUP_TMP_FOLDER}/${BACKUP_ID}-${TODAY}
-BACKUP_TMP_FILE=${BACKUP_TMP_FOLDER}/${BACKUP_ID}-${TODAY}.tar.gz
+BACKUP_TMP_FILE=${BACKUP_TMP_FOLDER}/${BACKUP_ID}-${TODAY}.tar.bz2
 PRESERVE_BACKUP_FILE=${PRESERVE_BACKUP_FILE:-false}
 BACKUP_S3_PATH=${S3_PREFIX}/${BACKUP_ID}/${SSH_HOST}/
 
@@ -55,10 +55,10 @@ xtrabackup --backup --target-dir ${BACKUP_TMP_PATH} --rsync \
 
 xtrabackup --prepare --target-dir ${BACKUP_TMP_PATH}
 
-# Create a tar.gz of the backup
+# Create a tar.bz2 of the backup
 if [ "a${BACKUP_SECRET}" == "a" ]; then
   echo "Compressing backup file ${BACKUP_TMP_FILE} ..."
-  tar -zvcf ${BACKUP_TMP_FILE} -C ${BACKUP_TMP_PATH} .
+  tar -zvjf ${BACKUP_TMP_FILE} -C ${BACKUP_TMP_PATH} .
   if [ ! -e ${BACKUP_TMP_FILE} ]; then
     echo "ERROR: could not create backup file ${BACKUP_TMP_FILE}, exiting ..."
     exit 1
@@ -66,7 +66,7 @@ if [ "a${BACKUP_SECRET}" == "a" ]; then
 else
   # Decrypt using openssl enc -d -aes-256-cbc -md md5 -k password -in archive.tar.gz.encrypt | tar -x
   echo "Compressing and encrypting backup file ${BACKUP_TMP_FILE}.encrypt ..."
-  tar -zvcf - -C ${BACKUP_TMP_PATH} . | openssl enc -e -aes256 -pbkdf2 -pass pass:${BACKUP_SECRET} -out ${BACKUP_TMP_FILE}.encrypt
+  tar -zvjf - -C ${BACKUP_TMP_PATH} . | openssl enc -e -aes256 -pbkdf2 -pass pass:${BACKUP_SECRET} -out ${BACKUP_TMP_FILE}.encrypt
   if [ ! -e ${BACKUP_TMP_FILE}.encrypt ]; then
     echo "ERROR: could not create backup file ${BACKUP_TMP_FILE}.encrypt, exiting ..."
     exit 1
