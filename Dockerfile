@@ -10,6 +10,7 @@ RUN apt update && apt -y install \
     gnupg2 \
     lsb-release \
     lz4 \
+    bzip2 \
     openssh-client
 
 # Install percona xtrabackup 8.0
