@@ -76,14 +76,14 @@ fi
 # Upload the backup to S3
 if [ a"${AWS_ACCESS_KEY_ID}" != "a" -a "a${AWS_SECRET_ACCESS_KEY}" != "a" -a "a${S3_BUCKET}" != "a" ]; then
   echo "Uploading backup to S3 server ${S3_ENDPOINT_URL} and bucket s3://${S3_BUCKET}/${BACKUP_S3_PATH} ..."
-  docker run --rm -a stdout -a stderr -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e S3_ENDPOINT_URL -v ${BACKUP_TMP_FOLDER}:${BACKUP_TMP_FOLDER}:ro ${S5_CMD_IMAGE} --log trace cp --storage-class=STANDARD_IA ${BACKUP_TMP_FILE}* s3://${S3_BUCKET}/${BACKUP_S3_PATH}/
+  docker run --rm -a stdout -a stderr -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e S3_ENDPOINT_URL -v ${BACKUP_TMP_FOLDER}:${BACKUP_TMP_FOLDER}:ro ${S5_CMD_IMAGE} cp --storage-class=STANDARD_IA ${BACKUP_TMP_FILE}* s3://${S3_BUCKET}/${BACKUP_S3_PATH}/
   backup-warden --hourly=240 --daily=30  --weekly=12 --monthly=12 --yearly=2 -s s3 -b ${S3_BUCKET} -p ${BACKUP_S3_PATH} --delete
 fi
 
 # Upload the backup to a secondary S3
 if [ a"${SECONDARY_AWS_ACCESS_KEY_ID}" != "a" -a "a${SECONDARY_AWS_SECRET_ACCESS_KEY}" != "a" -a "a${S3_BUCKET}" != "a" -a "a${SECONDARY_S3_ENDPOINT_URL}" != "a" ]; then
   echo "Uploading backup to S3 server ${SECONDARY_S3_ENDPOINT_URL} and bucket s3://${S3_BUCKET}/${BACKUP_S3_PATH} ..."
-  docker run --rm -a stdout -a stderr -e AWS_ACCESS_KEY_ID=${SECONDARY_AWS_ACCESS_KEY_ID} -e AWS_SECRET_ACCESS_KEY=${SECONDARY_AWS_SECRET_ACCESS_KEY} -e S3_ENDPOINT_URL=${SECONDARY_S3_ENDPOINT_URL} -v ${BACKUP_TMP_FOLDER}:${BACKUP_TMP_FOLDER}:ro ${S5_CMD_IMAGE} --log trace cp ${BACKUP_TMP_FILE}* s3://${S3_BUCKET}/${BACKUP_S3_PATH}
+  docker run --rm -a stdout -a stderr -e AWS_ACCESS_KEY_ID=${SECONDARY_AWS_ACCESS_KEY_ID} -e AWS_SECRET_ACCESS_KEY=${SECONDARY_AWS_SECRET_ACCESS_KEY} -e S3_ENDPOINT_URL=${SECONDARY_S3_ENDPOINT_URL} -v ${BACKUP_TMP_FOLDER}:${BACKUP_TMP_FOLDER}:ro ${S5_CMD_IMAGE} cp ${BACKUP_TMP_FILE}* s3://${S3_BUCKET}/${BACKUP_S3_PATH}
   AWS_ACCESS_KEY_ID=${SECONDARY_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${SECONDARY_AWS_SECRET_ACCESS_KEY} S3_ENDPOINT_URL=${SECONDARY_S3_ENDPOINT_URL} backup-warden --hourly=240 --daily=30  --weekly=12 --monthly=12 --yearly=2 -s s3 -b ${S3_BUCKET} -p ${BACKUP_S3_PATH} --delete
 fi
 
