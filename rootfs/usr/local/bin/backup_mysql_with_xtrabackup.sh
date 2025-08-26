@@ -26,6 +26,7 @@ TODAY=$(date +%Y%m%d-%H%M%S)
 
 BACKUP_TMP_PATH=${BACKUP_TMP_FOLDER}/${BACKUP_ID}-${TODAY}
 BACKUP_TMP_FILE=${BACKUP_TMP_FOLDER}/${BACKUP_ID}-${TODAY}.tar.gz
+PRESERVE_BACKUP_FILE=${PRESERVE_BACKUP_FILE:-false}
 BACKUP_S3_PATH=${S3_PREFIX}/${BACKUP_ID}/${SSH_HOST}/
 
 if [ "a${BACKUP_HOST}" == "a" ]; then
@@ -87,5 +88,9 @@ if [ a"${SECONDARY_AWS_ACCESS_KEY_ID}" != "a" -a "a${SECONDARY_AWS_SECRET_ACCESS
 fi
 
 # Delete backup file
-echo "Deleting backup file ${BACKUP_TMP_FILE} ..."
-rm -rf ${BACKUP_TMP_FILE}*
+echo "Deleting backup folder ${BACKUP_TMP_PATH} ..."
+rm -rf ${BACKUP_TMP_PATH}
+if [ a"${PRESERVE_BACKUP_FILE}" == a"true" ]; then
+  echo "Deleting backup file ${BACKUP_TMP_FILE} ..."
+  rm -rf ${BACKUP_TMP_FILE}*
+fi
