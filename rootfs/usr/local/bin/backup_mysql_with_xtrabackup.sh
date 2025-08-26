@@ -90,7 +90,7 @@ fi
 # Delete backup file
 echo "Deleting backup folder ${BACKUP_TMP_PATH} ..."
 rm -rf ${BACKUP_TMP_PATH}
-if [ a"${PRESERVE_BACKUP_FILE}" == a"true" ]; then
+if [ a"${PRESERVE_BACKUP_FILE}" != a"true" ]; then
   echo "Deleting backup file ${BACKUP_TMP_FILE} ..."
   rm -rf ${BACKUP_TMP_FILE}*
 fi
