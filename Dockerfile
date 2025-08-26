@@ -12,7 +12,12 @@ RUN apt update && apt -y install \
     lz4 \
     bzip2 \
     openssh-client \
-    docker-cli
+    docker-cli \
+    python3-pip
+
+# Install backup-warden
+RUN pip3 install \
+    backup-warden
 
 # Install percona xtrabackup 8.0
 RUN curl -O https://repo.percona.com/apt/percona-release_latest.generic_all.deb && \
