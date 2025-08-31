@@ -42,7 +42,7 @@ fi
 
 if [ a"${RSYNC_EXCLUDES}" != "a" ]; then
   for exclude_folder in $(echo "${RSYNC_EXCLUDES}" | tr ',' ' '); do
-    RSYNC_EXTRA_FLAGS+=" --exclude=\'${exclude_folder}\'"
+    RSYNC_EXTRA_FLAGS+=" --exclude=\"${exclude_folder}\""
   done
 fi
 
