@@ -21,6 +21,9 @@ LVM_SNAPSHOT_SIZE=${LVM_SNAPSHOT_SIZE:-"-L50G"}
 
 TODAY=$(date +%Y%m%d-%H%M%S)
 
+RSYNC_INCLUDES=${RSYNC_INCLUDES:-""}
+RSYNC_EXCLUDES=${RSYNC_EXCLUDES:-""}
+
 LVM_DEVICE=/dev/${LVM_VG}/${LVM_LV}
 SNAP_LVM_DEVICE=/dev/${LVM_VG}/${LVM_LV}-${BACKUP_ID}-snap
 SNAP_MOUNTPOINT=/mnt/${LVM_LV}-${BACKUP_ID}-snap
@@ -28,7 +31,19 @@ BACKUP_PATH_SOURCE=${SNAP_MOUNTPOINT}
 BACKUP_PATH_DEST=${BACKUP_PATH_DEST:-/backup/${BACKUP_ID}/${SSH_HOST_SOURCE}/${LVM_VG}/${LVM_LV}}
 
 if [ a"${DRY_RUN}" == a"true" ]; then
-  RSYNC_EXTRA_FLAGS="${RSYNC_EXTRA_FLAGS}n"
+  RSYNC_EXTRA_FLAGS+=" -n"
+fi
+
+if [ a"${RSYNC_INCLUDES}" != "a" ]; then
+  for include_folder in $(echo "${RSYNC_INCLUDES}" | tr ',' ' '); do
+    RSYNC_EXTRA_FLAGS+=" --include=${include_folder}"
+  done
+fi
+
+if [ a"${RSYNC_EXCLUDES}" != "a" ]; then
+  for exclude_folder in $(echo "${RSYNC_EXCLUDES}" | tr ',' ' '); do
+    RSYNC_EXTRA_FLAGS+=" --exclude=${exclude_folder}"
+  done
 fi
 
 if [ "a${SSH_HOST_SOURCE}" == "a" ]; then
@@ -68,6 +83,6 @@ ssh ${SSH_USER_SOURCE}@${SSH_HOST_SOURCE} ${SSH_OPTS} -p ${SSH_PORT_SOURCE} "if 
 
 # Rsync backup to destination server
 ssh ${SSH_USER_DEST}@${SSH_HOST_DEST} ${SSH_OPTS} -p ${SSH_PORT_DEST} "if [ ! -e ${BACKUP_PATH_DEST} ]; then mkdir -p ${BACKUP_PATH_DEST}; fi"
-ssh ${SSH_USER_DEST}@${SSH_HOST_DEST} ${SSH_OPTS} -p ${SSH_PORT_DEST} "rsync -${RSYNC_EXTRA_FLAGS}avz --delete-before -e \"ssh ${SSH_OPTS} -p ${SSH_PORT_SOURCE}\" ${SSH_USER_SOURCE}@${SSH_HOST_SOURCE}:${BACKUP_PATH_SOURCE}/ ${BACKUP_PATH_DEST}/"
+ssh ${SSH_USER_DEST}@${SSH_HOST_DEST} ${SSH_OPTS} -p ${SSH_PORT_DEST} "rsync ${RSYNC_EXTRA_FLAGS} -avz --delete-before -e \"ssh ${SSH_OPTS} -p ${SSH_PORT_SOURCE}\" ${SSH_USER_SOURCE}@${SSH_HOST_SOURCE}:${BACKUP_PATH_SOURCE}/ ${BACKUP_PATH_DEST}/"
 
 cleanup_lvm
