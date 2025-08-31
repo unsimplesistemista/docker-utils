@@ -34,7 +34,6 @@ if [ a"${DRY_RUN}" == a"true" ]; then
   RSYNC_EXTRA_FLAGS+=" -n"
 fi
 
-set -f
 if [ a"${RSYNC_INCLUDES}" != "a" ]; then
   for include_folder in $(echo "${RSYNC_INCLUDES}" | tr ',' ' '); do
     RSYNC_EXTRA_FLAGS+=" --include=\"${include_folder}\""
@@ -46,7 +45,6 @@ if [ a"${RSYNC_EXCLUDES}" != "a" ]; then
     RSYNC_EXTRA_FLAGS+=" --exclude=\"${exclude_folder}\""
   done
 fi
-set +f
 
 if [ "a${SSH_HOST_SOURCE}" == "a" ]; then
   echo "ERROR: Missing SSH_HOST_SOURCE variable, exiting ..."
