@@ -14,6 +14,7 @@ RUN apt update && apt -y install \
     openssh-client \
     docker-cli \
     python3-pip \
+    jq \
     bc
 
 # Install backup-warden
