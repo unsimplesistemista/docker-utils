@@ -16,7 +16,7 @@ CALLED_MONITORS=()
 
 for UR_API_KEY in $(echo ${UR_API_KEYS} | tr ',' ' '); do
   MONITORS=$(curl -s -XGET ${UR_API_ENDPOINT} -H "Accept: application/json" -H "Authorization: Bearer ${UR_API_KEY}")
-  FAILING_MONITORS+=( $(echo ${MONITORS} | jq -r ".data | .[] | select(.status == \"UP\") | .url") )
+  FAILING_MONITORS+=( $(echo ${MONITORS} | jq -r ".data | .[] | select(.status != \"UP\") | .url") )
 done
 
 SHOULD_CALL=false
