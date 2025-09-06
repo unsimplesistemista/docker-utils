@@ -24,7 +24,8 @@ for monitor in ${FAILING_MONITORS[@]}; do
   fi
 
   MONITOR_SEMAPHORE_FILE=$(echo ${monitor} | base64).called
-  TTL=$(echo $(cat ${MONITOR_SEMAPHORE_FILE} 2>/dev/null | grep "^ttl=" | awk -F= '{print $2}') + ${SEMAPHORE_TTL} | bc 2>/dev/null || echo 0)
+  TTL=$(echo $(cat ${MONITOR_SEMAPHORE_FILE} 2>/dev/null | grep "^ttl=" | awk -F= '{print $2}') + ${SEMAPHORE_TTL} | bc 2>/dev/null)
+  TTL=${TTL:-0}
   if [ $(date +%s) -ge ${TTL} ]; then
     rm -f ${MONITOR_SEMAPHORE_FILE}
   else
