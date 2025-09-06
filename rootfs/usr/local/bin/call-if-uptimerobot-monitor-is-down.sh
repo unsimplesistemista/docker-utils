@@ -1,5 +1,6 @@
 #!/bin/bash
 
+DRY_RUN=${DRY_RUN:-false}
 UR_API_ENDPOINT=https://api.uptimerobot.com/v3/monitors
 UR_API_KEYS=${UR_API_KEYS}
 SEMAPHORE_TTL=${SEMAPHORE_TTL:-300}
@@ -42,5 +43,7 @@ done
 if [ a"${SHOULD_CALL}" == a"true" ]; then
   echo "Calling for monitors down: "
   echo "${CALLED_MONITORS[@]}" | tr ' ' '\n'
-  python3 /usr/local/bin/call.py
+  if [ a"${DRY_RUN}" == a"false" ]; then
+    python3 /usr/local/bin/call.py
+  fi
 fi
