@@ -3,6 +3,7 @@
 UR_API_ENDPOINT=https://api.uptimerobot.com/v3/monitors
 UR_API_KEYS=${UR_API_KEYS}
 SEMAPHORE_TTL=${SEMAPHORE_TTL:-300}
+SEMAPHORE_DIR=${SEMAPHORE_DIR:-/tmp}
 
 SKIPPED_MONITORS=(
     "https://yclas.com"
@@ -23,7 +24,7 @@ for monitor in ${FAILING_MONITORS[@]}; do
     continue
   fi
 
-  MONITOR_SEMAPHORE_FILE=$(echo ${monitor} | base64).called
+  MONITOR_SEMAPHORE_FILE=${SEMAPHORE_DIR}/$(echo ${monitor} | base64).called
   TTL=$(echo $(cat ${MONITOR_SEMAPHORE_FILE} 2>/dev/null | grep "^ttl=" | awk -F= '{print $2}') + ${SEMAPHORE_TTL} | bc 2>/dev/null)
   TTL=${TTL:-0}
   if [ $(date +%s) -ge ${TTL} ]; then
