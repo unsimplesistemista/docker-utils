@@ -6,7 +6,7 @@ UR_API_KEYS=${UR_API_KEYS}
 SEMAPHORE_TTL=${SEMAPHORE_TTL:-300}
 SEMAPHORE_DIR=${SEMAPHORE_DIR:-/tmp}
 
-SKIPPED_MONITORS=(
+SKIPPED_MONITORS+=(
     "https://yclas.com"
     "https://www.domestika.org"
 )
