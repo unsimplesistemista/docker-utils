@@ -22,6 +22,7 @@ done
 SHOULD_CALL=false
 for monitor in ${FAILING_MONITORS[@]}; do
   if [[ " ${SKIPPED_MONITORS[*]} " =~ " ${monitor} " ]]; then
+    echo "Skipping monitor ${monitor} ..."
     continue
   fi
 
