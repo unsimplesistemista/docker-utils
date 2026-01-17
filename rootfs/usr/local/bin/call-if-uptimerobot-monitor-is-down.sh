@@ -9,6 +9,7 @@ SEMAPHORE_DIR=${SEMAPHORE_DIR:-/tmp}
 SKIPPED_MONITORS+=(
     "https://yclas.com"
     "https://www.domestika.org"
+    "https://meditaresfacil.com"
 )
 
 FAILING_MONITORS=()
