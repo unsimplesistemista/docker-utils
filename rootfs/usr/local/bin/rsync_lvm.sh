@@ -66,6 +66,7 @@ fi
 function cleanup_lvm {
   # Delete snapshot if exists
   ssh ${SSH_USER_SOURCE}@${SSH_HOST_SOURCE} ${SSH_OPTS} -p ${SSH_PORT_SOURCE} "if mount | grep -q ${SNAP_MOUNTPOINT}; then echo "Unmounting previous snapshot ${SNAP_MOUNTPOINT} ..."; umount ${SNAP_LVM_DEVICE}; fi"
+  sleep 5
   ssh ${SSH_USER_SOURCE}@${SSH_HOST_SOURCE} ${SSH_OPTS} -p ${SSH_PORT_SOURCE} "if [ -e ${SNAP_LVM_DEVICE} ]; then echo "Deleting previous snapshot ${SNAP_LVM_DEVICE} ..."; lvremove -f ${SNAP_LVM_DEVICE}; fi"
 }
 
